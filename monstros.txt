@@ -1,0 +1,20 @@
+Demonio | 20 | 5
+Destruidor | 50 | 15
+Fúria | 10 | 10
+Dragão | 80 | 10
+Dragão de Gelo | 100 | 20
+Hidra | 30 | 6
+Ciclope | 25 | 8
+Gigante de Gelo | 50 | 16
+Ogro Bruto | 15 | 4
+Gênio Vermelho | 10 | 4
+Gargula | 30 | 5
+Medusa | 8 | 16
+Pantera Negra | 20 | 5
+Pesadelo | 2 | 20
+Troll | 16 | 4
+Verme Gigante | 28 | 3
+Elemental Fogo | 40 | 10
+Elemental Água | 30 | 6
+Elemental Terra | 50 | 15
+Elemental Ar | 70 | 5
