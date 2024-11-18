@@ -28,9 +28,6 @@ public class Runtime {
 		
 		System.out.println("Você encontrou: " + inimigo.get_nome() + "!");
 		
-		int poder = 10;
-		int custo = 4;
-		
 		boolean batalhando = true;
 		boolean turno = true;
 		
@@ -59,12 +56,14 @@ public class Runtime {
 				turno = !turno;
 				break;
 			case 3:
+				Magia escolhido = jogador.feitiços.get(0);
+				int custo = escolhido.getCusto();
 				if(jogador.mana - custo >= 0) {
-					dano_total = poder;
+					dano_total = escolhido.getPoder();
 					jogador.mana -= custo;
 					turno = !turno;
 					
-					System.out.println("Você lança um feitiço!");
+					System.out.println("Você lança o feitiço " + escolhido.getNome() + "!");
 				}else {
 					System.out.println("Você não tem mana suficiente!");
 				}
