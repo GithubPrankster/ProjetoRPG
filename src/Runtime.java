@@ -56,17 +56,27 @@ public class Runtime {
 				turno = !turno;
 				break;
 			case 3:
-				Magia escolhido = jogador.feitiços.get(0);
-				int custo = escolhido.getCusto();
-				if(jogador.mana - custo >= 0) {
-					dano_total = escolhido.getPoder();
-					jogador.mana -= custo;
-					turno = !turno;
-					
-					System.out.println("Você lança o feitiço " + escolhido.getNome() + "!");
-				}else {
-					System.out.println("Você não tem mana suficiente!");
+				System.out.println("Escolha um feitiço:");
+				int i = 1;
+				for(Magia feitiço : jogador.feitiços) {
+					System.out.println(i + ". " + feitiço.getNome());
 				}
+				System.out.println("0 ou outro. Sair");
+				int sel = entrada.nextInt();
+				if(sel > 0 && sel <= jogador.feitiços.size()) {
+					Magia escolhido = jogador.feitiços.get(sel - 1);
+					int custo = escolhido.getCusto();
+					if(jogador.mana - custo >= 0) {
+						dano_total = escolhido.getPoder();
+						jogador.mana -= custo;
+						turno = !turno;
+						
+						System.out.println("Você lança o feitiço " + escolhido.getNome() + "!");
+					}else {
+						System.out.println("Você não tem mana suficiente!");
+					}
+				}
+
 				break;
 			default:
 				System.out.println("Opção Inválida.");
