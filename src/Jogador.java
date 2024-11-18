@@ -6,9 +6,11 @@ public class Jogador {
 	private Armadura armadura_ativa = null;
 	private Arma arma_ativa = null;
 	
+	private int exp = 0;
 	public int vida = 20;
 	public int ataque = 5;
 	public int mana = 10;
+	
 	public boolean defesa = false;
 	
 	public Jogador() {
@@ -45,5 +47,9 @@ public class Jogador {
 	@Override
 	public String toString() {
 		return "Sua Vida: " + vida + " | Seu Ataque: " + ataque + " | Sua Mana: " + mana;
+	}
+
+	public int getExp() {
+		return exp;
 	}
 }

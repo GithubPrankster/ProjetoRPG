@@ -3,6 +3,7 @@ public class Inimigo {
 	private int vida = 10;
 	private int poder = 1;
 	
+	// Formato: nome | vida | poder
 	public Inimigo(String linha) {
 		String[] parts = linha.split("\\|");
 		nome = parts[0].trim();

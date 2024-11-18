@@ -143,4 +143,8 @@ public class Arma extends Item {
 	public int getDano() {
 		return dano;
 	}
+
+	public int getPreco() {
+		return preco;
+	}
 }
