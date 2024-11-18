@@ -2,6 +2,7 @@ import java.util.*;
 
 public class Jogador {
 	public ArrayList<Item> inventario = new ArrayList<>();
+	public ArrayList<Magia> feitiços = new ArrayList<>();
 	
 	private Armadura armadura_ativa = null;
 	private Arma arma_ativa = null;
@@ -14,14 +15,16 @@ public class Jogador {
 	public boolean defesa = false;
 	
 	public Jogador() {
+		feitiços.add(new Magia("Bola de Fogo", 10, 3));
 	}
 	
 	public Jogador(int v, int a, int m) {
+		this();
 		vida = v;
 		ataque = a;
 		mana = m;
 	}
-	
+
 	public void equipar_armadura(Armadura armadura) {
 		armadura_ativa = armadura;
 	}
