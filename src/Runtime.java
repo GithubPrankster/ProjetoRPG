@@ -11,19 +11,9 @@ public class Runtime {
 	static ArrayList<Inimigo> inimigos = new ArrayList<>();
 	static Jogador jogador = new Jogador();
 	
-	public static void main(String[] args) {
-		String[] nomes = null;
-		try {
-			nomes = Files.readAllLines(Paths.get(monstros_texto))
-			        .toArray(new String[0]);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		for(int i = 0; i < nomes.length; i++) {
-			inimigos.add(new Inimigo(nomes[i]));
-		}
-		
+	static int estado = 0;
+	
+	public static void batalha() {
 		Inimigo inimigo = inimigos.get(random.nextInt(inimigos.size()));
 		
 		System.out.println("Você encontrou: " + inimigo.get_nome() + "!");
@@ -87,18 +77,74 @@ public class Runtime {
 				if(inimigo.receba_dano(dano_total)) {
 					System.out.println("Inimigo " + inimigo.get_nome() + " foi derrotado!!");
 					batalhando = false;
+					estado = 0;
 				}else {
 					System.out.println("Inimigo " + inimigo.get_nome() + " lhe ataca!");
 					
 					if(jogador.calcule_dano(inimigo.getPoder())) {
 						System.out.println("Você foi derrotado...");
 						batalhando = false;
+						estado = 4;
 					}else {
 						turno = !turno;
 					}
 				}
 			}
 		}
+		
+	}
+	
+	public static void main(String[] args) {
+		String[] nomes = null;
+		try {
+			nomes = Files.readAllLines(Paths.get(monstros_texto))
+			        .toArray(new String[0]);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		for(int i = 0; i < nomes.length; i++) {
+			inimigos.add(new Inimigo(nomes[i]));
+		}
+		
+		System.out.println("Bem-vindo ao mundo!");
+		
+		boolean jogando = true;
+		while(jogando) {
+			switch(estado) {
+			case 0:
+				System.out.println("Você está na cidade de Bree. O que deseja fazer?");
+				System.out.println("1. Visitar a taverna");
+				System.out.println("2. Descansar numa Inn");
+				System.out.println("3. Ir ao ferreiro");
+				System.out.println("4. Voltar para a estrada");
+				
+				int sel = entrada.nextInt();
+				switch(sel) {
+				case 2:
+					System.out.println("Bons sonhos!");
+					jogador.restauração();
+					break;
+				case 4:
+					System.out.println("Você começar a andar um pouco...");
+					estado = 1;
+					break;
+				default:
+					System.out.println("Opção desconhecida!");
+					break;
+				}
+				break;
+			case 1:
+				batalha();
+				break;
+			case 4:
+				System.out.println("Fim de Jogo");
+				jogando = false;
+				break;
+			}
+		}
+		
+		
 		
 		entrada.close();
 	}

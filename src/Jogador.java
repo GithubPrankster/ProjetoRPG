@@ -8,6 +8,9 @@ public class Jogador {
 	private Arma arma_ativa = null;
 	
 	private int exp = 0;
+	private int vida_max = 20;
+	private int mana_max = 10;
+	
 	public int vida = 20;
 	public int ataque = 5;
 	public int mana = 10;
@@ -23,6 +26,14 @@ public class Jogador {
 		vida = v;
 		ataque = a;
 		mana = m;
+		
+		vida_max = v;
+		mana_max = m;
+	}
+	
+	public void restauração() {
+		vida = vida_max;
+		mana = mana_max;
 	}
 
 	public void equipar_armadura(Armadura armadura) {
