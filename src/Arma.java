@@ -139,4 +139,8 @@ public class Arma extends Item {
             this.rara = false;
         }
     }
+
+	public int getDano() {
+		return dano;
+	}
 }

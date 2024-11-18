@@ -10,10 +10,6 @@ public class Inimigo {
 		poder = Integer.parseInt(parts[2].trim());
 	}
 	
-	public int calcule_dano(int sua_vida, boolean defesa) {
-		return (int) (sua_vida - (poder * (defesa ? 0.5 : 1)));
-	}
-	
 	public boolean receba_dano(int dano) {
 		vida -= dano;
 		return vida <= 0;
@@ -26,5 +22,9 @@ public class Inimigo {
 	@Override
 	public String toString() {
 		return "Inimigo: " + nome + " | Vida: " + vida;
+	}
+
+	public int getPoder() {
+		return poder;
 	}
 }

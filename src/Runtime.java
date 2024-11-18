@@ -33,7 +33,6 @@ public class Runtime {
 		
 		boolean batalhando = true;
 		boolean turno = true;
-		boolean defesa = false;
 		
 		while(batalhando) {
 			System.out.println("<=========================>");
@@ -52,11 +51,11 @@ public class Runtime {
 			int num = entrada.nextInt();
 			switch(num) {
 			case 1:
-				dano_total = jogador.ataque;
+				dano_total = jogador.calcule_ataque();
 				turno = !turno;
 				break;
 			case 2:
-				defesa = true;
+				jogador.defesa = true;
 				turno = !turno;
 				break;
 			case 3:
@@ -77,15 +76,12 @@ public class Runtime {
 			
 			if(!turno) {
 				if(inimigo.receba_dano(dano_total)) {
-					System.out.println("Inimigo " + inimigo + " foi derrotado!!");
+					System.out.println("Inimigo " + inimigo.get_nome() + " foi derrotado!!");
 					batalhando = false;
 				}else {
-					System.out.println("Inimigo " + inimigo + " lhe ataca!");
+					System.out.println("Inimigo " + inimigo.get_nome() + " lhe ataca!");
 					
-					jogador.vida = inimigo.calcule_dano(jogador.vida, defesa);
-					defesa = false;
-					
-					if(jogador.vida <= 0) {
+					if(jogador.calcule_dano(inimigo.getPoder())) {
 						System.out.println("Você foi derrotado...");
 						batalhando = false;
 					}else {

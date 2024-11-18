@@ -141,4 +141,12 @@ public class Armadura extends Item {
             this.rara = false;
         }
     }
+
+	public int getDefesa() {
+		return defesa;
+	}
+
+	public int getPreco() {
+		return preco;
+	}
 }
