@@ -109,6 +109,11 @@ public class Runtime {
 		
 		System.out.println("Bem-vindo ao mundo!");
 		
+		jogador.inventario.add(new Armadura(1, 1));
+		jogador.inventario.add(new Arma(1, 1));
+		jogador.equipar_armadura((Armadura)jogador.inventario.get(0));
+		jogador.equipar_arma((Arma)jogador.inventario.get(1));
+		
 		boolean jogando = true;
 		while(jogando) {
 			switch(estado) {
