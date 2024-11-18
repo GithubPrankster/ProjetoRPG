@@ -20,8 +20,8 @@ public class Runtime {
 			e.printStackTrace();
 		}
 		
-		for(String nome : nomes) {
-			inimigos.add(new Inimigo(nome));
+		for(int i = 0; i < nomes.length; i++) {
+			inimigos.add(new Inimigo(nomes[i]));
 		}
 		
 		Inimigo inimigo = inimigos.get(random.nextInt(inimigos.size()));
