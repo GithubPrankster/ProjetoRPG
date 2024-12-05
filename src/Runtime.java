@@ -16,6 +16,9 @@ public class Runtime {
 	static ArrayList<Inimigo> inimigos = new ArrayList<>();
 	static Jogador jogador = new Jogador();
 	
+	static ArrayList<Cidade> cidades = new ArrayList<>();
+	static Cidade cidade_atual = null;
+	
 	static int estado = ESTADO_CIDADE;
 	
 	static int quest_ativa = 0;
@@ -139,11 +142,16 @@ public class Runtime {
 		jogador.equipar_armadura((Armadura)jogador.inventario.get(0));
 		jogador.equipar_arma((Arma)jogador.inventario.get(1));
 		
+		cidades.add(new Cidade("Bree"));
+		cidades.add(new Cidade("Carlin"));
+		cidades.add(new Cidade("Trevor"));
+		cidade_atual = cidades.get(0);
+		
 		boolean jogando = true;
 		while(jogando) {
 			switch(estado) {
 			case ESTADO_CIDADE:
-				System.out.println("Você está na cidade de Bree. O que deseja fazer?");
+				System.out.println("Você está na cidade de " + cidade_atual.getNome() + ". O que deseja fazer?");
 				System.out.println("1. Visitar a taverna");
 				System.out.println("2. Descansar numa Inn");
 				System.out.println("3. Ir ao ferreiro");
