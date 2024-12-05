@@ -77,7 +77,7 @@ public class Runtime {
 				if(sim >= 1) {
 					System.out.println("Você consegue escapar!");
 					batalhando = false;
-					estado = 0;
+					estado = 3;
 				}else {
 					System.out.println("Você não conseguiu escapar!");
 					turno = !turno;
@@ -92,7 +92,7 @@ public class Runtime {
 				if(inimigo.receba_dano(dano_total)) {
 					System.out.println("Inimigo " + inimigo.get_nome() + " foi derrotado!!");
 					batalhando = false;
-					estado = 0;
+					estado = 3;
 				}else {
 					System.out.println("Inimigo " + inimigo.get_nome() + " lhe ataca!");
 					
@@ -151,12 +151,7 @@ public class Runtime {
 					jogador.restauração();
 					break;
 				case 4:
-					System.out.println("Você começar a andar um pouco...");
-					int possibilidade = random.nextInt(3);
-					if(possibilidade == 0) {
-						System.out.println("Você se depara com um monstro!");
-						estado = 1;
-					}
+					estado = 2;
 					break;
 				default:
 					System.out.println("Opção desconhecida!");
@@ -165,6 +160,34 @@ public class Runtime {
 				break;
 			case 1:
 				batalha();
+				break;
+			case 2:
+				System.out.println("Você começar a andar um pouco...");
+				int possibilidade = random.nextInt(3);
+				switch(possibilidade) {
+					case 0:
+						System.out.println("Você se depara com um monstro!");
+						estado = 1;
+						break;
+					default:
+						System.out.println("Você não encontra nada.\nGostaria de voltar?\n0 = Não, 1 = Sim");
+						int alt_sel = entrada.nextInt();
+						if(alt_sel >= 1) {
+							System.out.println("Você volta para Bree.");
+							estado = 0;
+						}
+						break;
+				}
+				break;
+			case 3:
+				System.out.println("Gostaria de voltar para Bree?\n0 = Não, 1 = Sim");
+				int e_sel = entrada.nextInt();
+				if(e_sel >= 1) {
+					System.out.println("Você volta para Bree.");
+					estado = 0;
+				}else {
+					estado = 2;
+				}
 				break;
 			case 4:
 				System.out.println("Fim de Jogo");
