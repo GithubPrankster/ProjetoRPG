@@ -4,6 +4,11 @@ import java.nio.file.*;
 
 public class Runtime {
 	final static String monstros_texto = "monstros.txt";
+	final static int ESTADO_CIDADE = 0;
+	final static int ESTADO_BATALHA = 1;
+	final static int ESTADO_ESTRADA = 2;
+	final static int ESTADO_ESCAPE = 3;
+	final static int ESTADO_DERROTA = 4;
 	
 	static Random random = new Random();
 	static Scanner entrada = new Scanner(System.in);
@@ -11,7 +16,7 @@ public class Runtime {
 	static ArrayList<Inimigo> inimigos = new ArrayList<>();
 	static Jogador jogador = new Jogador();
 	
-	static int estado = 0;
+	static int estado = ESTADO_CIDADE;
 	
 	static int quest_ativa = 0;
 	
@@ -77,7 +82,7 @@ public class Runtime {
 				if(sim >= 1) {
 					System.out.println("Você consegue escapar!");
 					batalhando = false;
-					estado = 3;
+					estado = ESTADO_ESCAPE;
 				}else {
 					System.out.println("Você não conseguiu escapar!");
 					turno = !turno;
@@ -92,14 +97,14 @@ public class Runtime {
 				if(inimigo.receba_dano(dano_total)) {
 					System.out.println("Inimigo " + inimigo.get_nome() + " foi derrotado!!");
 					batalhando = false;
-					estado = 3;
+					estado = ESTADO_ESCAPE;
 				}else {
 					System.out.println("Inimigo " + inimigo.get_nome() + " lhe ataca!");
 					
 					if(jogador.calcule_dano(inimigo.getPoder())) {
 						System.out.println("Você foi derrotado...");
 						batalhando = false;
-						estado = 4;
+						estado = ESTADO_DERROTA;
 					}else {
 						turno = !turno;
 					}
@@ -137,7 +142,7 @@ public class Runtime {
 		boolean jogando = true;
 		while(jogando) {
 			switch(estado) {
-			case 0:
+			case ESTADO_CIDADE:
 				System.out.println("Você está na cidade de Bree. O que deseja fazer?");
 				System.out.println("1. Visitar a taverna");
 				System.out.println("2. Descansar numa Inn");
@@ -158,10 +163,10 @@ public class Runtime {
 					break;
 				}
 				break;
-			case 1:
+			case ESTADO_BATALHA:
 				batalha();
 				break;
-			case 2:
+			case ESTADO_ESTRADA:
 				System.out.println("Você começar a andar um pouco...");
 				int possibilidade = random.nextInt(3);
 				switch(possibilidade) {
@@ -179,17 +184,17 @@ public class Runtime {
 						break;
 				}
 				break;
-			case 3:
+			case ESTADO_ESCAPE:
 				System.out.println("Gostaria de voltar para Bree?\n0 = Não, 1 = Sim");
 				int e_sel = entrada.nextInt();
 				if(e_sel >= 1) {
 					System.out.println("Você volta para Bree.");
-					estado = 0;
+					estado = ESTADO_CIDADE;
 				}else {
-					estado = 2;
+					estado = ESTADO_ESTRADA;
 				}
 				break;
-			case 4:
+			case ESTADO_DERROTA:
 				System.out.println("Fim de Jogo");
 				jogando = false;
 				break;
