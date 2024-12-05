@@ -131,8 +131,8 @@ public class Runtime {
 		Campo demons_hill = new Campo("Demon's Hill");
 		Campo bloody_queen = new Campo("Bloody Queen");
 		
-		bree.adicionar_campo(demons_hill);
-		bree.adicionar_campo(bloody_queen);
+		bree.campos.add(demons_hill);
+		bree.campos.add(bloody_queen);
 		
 		cidades.add(bree);
 		
@@ -141,8 +141,8 @@ public class Runtime {
 		Campo city_goblins = new Campo("City of Goblins");
 		Campo dark_dungeon = new Campo("Dark Dungeon");
 		
-		carlin.adicionar_campo(city_goblins);
-		carlin.adicionar_campo(dark_dungeon);
+		carlin.campos.add(city_goblins);
+		carlin.campos.add(dark_dungeon);
 		
 		cidades.add(carlin);
 		
@@ -152,14 +152,14 @@ public class Runtime {
 		Campo poison = new Campo("Posion");
 		Campo graws_voice = new Campo("Graw's Voice");
 		
-		trevor.adicionar_campo(thunder);
-		trevor.adicionar_campo(poison);
-		trevor.adicionar_campo(graws_voice);
+		trevor.campos.add(thunder);
+		trevor.campos.add(poison);
+		trevor.campos.add(graws_voice);
 		
 		cidades.add(trevor);
 		
 		cidade_atual = cidades.get(0);
-		campo_atual = cidade_atual.getCampo(0);
+		campo_atual = cidade_atual.campos.get(0);
 		
 		// Carregando os inimigos
 		
@@ -209,7 +209,7 @@ public class Runtime {
 					jogador.restauração();
 					break;
 				case 4:
-					estado = 2;
+					estado = ESTADO_LUGAR;
 					break;
 				default:
 					System.out.println("Opção desconhecida!");
@@ -248,6 +248,11 @@ public class Runtime {
 				}
 				break;
 			case ESTADO_LUGAR:
+				System.out.println("Para onde gostaria de ir?");
+				int num = 1;
+				for(Campo i : cidade_atual.campos) {
+					System.out.println(num + ". " + i.get_nome());
+				}
 				break;
 			case ESTADO_DERROTA:
 				System.out.println("Fim de Jogo");
