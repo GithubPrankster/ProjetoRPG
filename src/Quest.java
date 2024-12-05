@@ -17,4 +17,8 @@ public class Quest {
 	public String get_descricao() {
 		return descricao;
 	}
+	
+	public Item get_recompensa() {
+		return recompensa;
+	}
 }

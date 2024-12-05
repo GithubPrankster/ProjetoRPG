@@ -7,7 +7,10 @@ public class Jogador {
 	private Armadura armadura_ativa = null;
 	private Arma arma_ativa = null;
 	
+	private int nivel = 1;
 	private int exp = 0;
+	private int expParaProximoNivel = 100;
+	
 	private int vida_max = 20;
 	private int mana_max = 10;
 	
@@ -19,6 +22,10 @@ public class Jogador {
 	
 	public Jogador() {
 		feitiços.add(new Magia("Bola de Fogo", 10, 3));
+		inventario.add(new Armadura(1, 1));
+		inventario.add(new Arma(1, 1));
+		equipar_armadura((Armadura)inventario.get(0));
+		equipar_arma((Arma)inventario.get(1));
 	}
 	
 	public Jogador(int v, int a, int m) {
@@ -55,7 +62,7 @@ public class Jogador {
 	}
 	
 	public int calcule_ataque() {
-		return arma_ativa != null ? arma_ativa.getDano() : ataque;
+		return arma_ativa != null ? (int) (arma_ativa.getDano() * (ataque / 5.0)) : ataque;
 	}
 	
 	@Override
@@ -66,4 +73,27 @@ public class Jogador {
 	public int getExp() {
 		return exp;
 	}
+	
+	public void ganharXP(int xpRecebido) {
+        exp += xpRecebido;
+        System.out.println("Você ganhou " + xpRecebido + " XP!");
+        verificarNivelUp();
+    }
+
+    // Método para verificação para subir de nivel
+    private void verificarNivelUp() {
+        while (exp >= expParaProximoNivel) {
+            exp -= expParaProximoNivel;
+            nivel++;
+            expParaProximoNivel += 50; // xp necessario para o proximo nivel>3
+            System.out.println("Você subiu para o nível " + nivel + "!");
+            
+            vida_max = 20 + (10 * nivel);
+            mana_max = 10 + (5 * nivel);
+            ataque = (int) (5 + (2.5 * nivel));
+            
+            vida = vida_max;
+            mana = mana_max;
+        }
+    }
 }

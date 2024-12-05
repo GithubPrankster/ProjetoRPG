@@ -11,6 +11,12 @@ public class Inimigo {
 		poder = Integer.parseInt(parts[2].trim());
 	}
 	
+	public Inimigo(String n, int v, int p) {
+		nome = n;
+		vida = v;
+		poder = p;
+	}
+	
 	public boolean receba_dano(int dano) {
 		vida -= dano;
 		return vida <= 0;
@@ -27,5 +33,13 @@ public class Inimigo {
 
 	public int getPoder() {
 		return poder;
+	}
+	
+	public int getVida() {
+		return vida;
+	}
+	
+	public Inimigo clone() {
+		return new Inimigo(nome, vida, poder);
 	}
 }

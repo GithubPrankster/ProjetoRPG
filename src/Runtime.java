@@ -26,7 +26,7 @@ public class Runtime {
 	static int quest_ativa = 0;
 	
 	public static void batalha() {
-		Inimigo inimigo = campo_atual.encontro(random);
+		Inimigo inimigo = campo_atual.encontro(random).clone();
 		
 		System.out.println("Você encontrou: " + inimigo.get_nome() + "!");
 		
@@ -101,6 +101,9 @@ public class Runtime {
 			if(!turno) {
 				if(inimigo.receba_dano(dano_total)) {
 					System.out.println("Inimigo " + inimigo.get_nome() + " foi derrotado!!");
+					
+					jogador.ganharXP(inimigo.getPoder() * 4 + (inimigo.getVida() / 2));
+					
 					batalhando = false;
 					estado = ESTADO_ESCAPE;
 				}else {
@@ -162,7 +165,7 @@ public class Runtime {
 		trevor.campos.add(poison);
 		trevor.campos.add(crows_voice);
 		
-		trevor.quests.add(new Quest("Os magos de Trevor", 
+		trevor.quests.add(new Quest("Os Magos de Trevor", 
 				"Os magos que se hospedavam na cidade desapareceram misteriosamente.\nOs cidadões querem descobrir o que causou o sumiço.", null));
 		
 		trevor.quests.add(new Quest("O Conto da Sereia", 
@@ -196,13 +199,6 @@ public class Runtime {
 				bloody_queen.adicionar_inimigo(ini);
 			}
 		}
-		
-		// Equipamento inicial para o jogador
-		
-		jogador.inventario.add(new Armadura(1, 1));
-		jogador.inventario.add(new Arma(1, 1));
-		jogador.equipar_armadura((Armadura)jogador.inventario.get(0));
-		jogador.equipar_arma((Arma)jogador.inventario.get(1));
 		
 		System.out.println("Bem-vindo ao mundo!");
 		
@@ -241,6 +237,7 @@ public class Runtime {
 				int possibilidade = random.nextInt(3);
 				switch(possibilidade) {
 					case 0:
+					case 1:
 						System.out.println("Você se depara com um monstro!");
 						estado = 1;
 						break;
