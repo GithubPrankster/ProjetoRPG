@@ -249,10 +249,43 @@ public class Runtime {
 				break;
 			case ESTADO_LUGAR:
 				System.out.println("Para onde gostaria de ir?");
+				ArrayList<Cidade> visitavel = new ArrayList<>();
+				
 				int num = 1;
 				for(Campo i : cidade_atual.campos) {
 					System.out.println(num + ". " + i.get_nome());
+					num++;
 				}
+				
+				int diff = num;
+				
+				for(Cidade c : cidades) {
+					if(c.getNome() != cidade_atual.getNome()) {
+						visitavel.add(c);
+						System.out.println(num + ". " + c.getNome());
+						num++;
+					}
+				}
+				
+				System.out.println(num + ". De Volta");
+				
+				int l_sel = entrada.nextInt();
+				if(l_sel == num) {
+					estado = ESTADO_CIDADE;
+				}else {
+					if(l_sel >= 1 && l_sel <= num) {
+						if(l_sel < diff) {
+							campo_atual = cidade_atual.campos.get(l_sel - 1);
+							estado = ESTADO_ESTRADA;
+						}else {
+							cidade_atual = visitavel.get(l_sel - diff);
+							estado = ESTADO_CIDADE;
+						}
+					}else {
+						System.out.println("Seleção invalída.");
+					}
+				}
+				
 				break;
 			case ESTADO_DERROTA:
 				System.out.println("Fim de Jogo");
