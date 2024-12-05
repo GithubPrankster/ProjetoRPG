@@ -13,6 +13,8 @@ public class Runtime {
 	
 	static int estado = 0;
 	
+	static int quest_ativa = 0;
+	
 	public static void batalha() {
 		Inimigo inimigo = inimigos.get(random.nextInt(inimigos.size()));
 		
@@ -32,6 +34,7 @@ public class Runtime {
 			System.out.println("2. Defesa");
 			System.out.println("3. Magica");
 			System.out.println("4. Item");
+			System.out.println("5. Escapar");
 			System.out.println("<=========================>");
 			
 			int dano_total = 0;
@@ -68,6 +71,18 @@ public class Runtime {
 				}
 
 				break;
+			case 5:
+				System.out.println("Você tenta escapar...");
+				int sim = random.nextInt(3);
+				if(sim >= 1) {
+					System.out.println("Você consegue escapar!");
+					batalhando = false;
+					estado = 0;
+				}else {
+					System.out.println("Você não conseguiu escapar!");
+					turno = !turno;
+				}
+				break;
 			default:
 				System.out.println("Opção Inválida.");
 				break;
@@ -91,6 +106,11 @@ public class Runtime {
 				}
 			}
 		}
+		
+	}
+	
+	public static void taverna() {
+		System.out.println("Na taverna, você se depara com uma tabela de Quests...");
 		
 	}
 	
@@ -132,7 +152,11 @@ public class Runtime {
 					break;
 				case 4:
 					System.out.println("Você começar a andar um pouco...");
-					estado = 1;
+					int possibilidade = random.nextInt(3);
+					if(possibilidade == 0) {
+						System.out.println("Você se depara com um monstro!");
+						estado = 1;
+					}
 					break;
 				default:
 					System.out.println("Opção desconhecida!");
