@@ -1,6 +1,8 @@
 import java.util.*;
 
 public class Jogador {
+	private String nome = "João Ninguem";
+	
 	public ArrayList<Item> inventario = new ArrayList<>();
 	public ArrayList<Magia> feitiços = new ArrayList<>();
 	
@@ -28,8 +30,9 @@ public class Jogador {
 		equipar_arma((Arma)inventario.get(1));
 	}
 	
-	public Jogador(int v, int a, int m) {
+	public Jogador(String nom, int v, int a, int m) {
 		this();
+		nome = nom;
 		vida = v;
 		ataque = a;
 		mana = m;
@@ -67,16 +70,20 @@ public class Jogador {
 	
 	@Override
 	public String toString() {
-		return "Sua Vida: " + vida + " | Seu Ataque: " + ataque + " | Sua Mana: " + mana;
+		return "Guerreiro Atual: "+ nome + "\nVida: " + vida + " | Ataque: " + calcule_ataque() + " | Mana: " + mana;
 	}
 
 	public int getExp() {
 		return exp;
 	}
 	
+	public String getNome() {
+		return nome;
+	}
+	
 	public void ganharXP(int xpRecebido) {
         exp += xpRecebido;
-        System.out.println("Você ganhou " + xpRecebido + " XP!");
+        System.out.println(nome + " ganha " + xpRecebido + " XP!");
         verificarNivelUp();
     }
 
@@ -86,10 +93,10 @@ public class Jogador {
             exp -= expParaProximoNivel;
             nivel++;
             expParaProximoNivel += 50; // xp necessario para o proximo nivel>3
-            System.out.println("Você subiu para o nível " + nivel + "!");
+            System.out.println(nome + "sobe para o nível " + nivel + "!");
             
-            vida_max = 20 + (10 * nivel);
-            mana_max = 10 + (5 * nivel);
+            vida_max += (10 * nivel);
+            mana_max += (5 * nivel);
             ataque = (int) (5 + (2.5 * nivel));
             
             vida = vida_max;

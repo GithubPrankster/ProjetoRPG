@@ -15,7 +15,7 @@ public class Runtime {
 	static Random random = new Random();
 	static Scanner entrada = new Scanner(System.in);
 	
-	static Jogador jogador = new Jogador();
+	static ArrayList<Jogador> jogadores = new ArrayList<>();
 	
 	static ArrayList<Cidade> cidades = new ArrayList<>();
 	static Cidade cidade_atual = null;
@@ -34,95 +34,118 @@ public class Runtime {
 		boolean turno = true;
 		
 		while(batalhando) {
-			System.out.println("<=========================>");
-			System.out.println(inimigo);
-			System.out.println("<=========================>");
-			System.out.println(jogador);
-			System.out.println("<=========================>");
-			System.out.println("Suas Opções:");
-			System.out.println("1. Ataque");
-			System.out.println("2. Defesa");
-			System.out.println("3. Magica");
-			System.out.println("4. Item");
-			System.out.println("5. Escapar");
-			System.out.println("<=========================>");
+			boolean ainda_vivo = false;
 			
-			int dano_total = 0;
-			int num = entrada.nextInt();
-			switch(num) {
-			case 1:
-				dano_total = jogador.calcule_ataque();
-				turno = !turno;
-				break;
-			case 2:
-				jogador.defesa = true;
-				turno = !turno;
-				break;
-			case 3:
-				System.out.println("Escolha um feitiço:");
-				int i = 1;
-				for(Magia feitiço : jogador.feitiços) {
-					System.out.println(i + ". " + feitiço.getNome());
+			for(Jogador jogador : jogadores) {
+				if(jogador.vida <= 0) {
+					continue;
 				}
-				System.out.println("0 ou outro. Sair");
-				int sel = entrada.nextInt();
-				if(sel > 0 && sel <= jogador.feitiços.size()) {
-					Magia escolhido = jogador.feitiços.get(sel - 1);
-					int custo = escolhido.getCusto();
-					if(jogador.mana - custo >= 0) {
-						dano_total = escolhido.getPoder();
-						jogador.mana -= custo;
-						turno = !turno;
-						
-						System.out.println("Você lança o feitiço " + escolhido.getNome() + "!");
+				
+				System.out.println("<=========================>");
+				System.out.println(inimigo);
+				System.out.println("<=========================>");
+				System.out.println(jogador);
+				System.out.println("<=========================>");
+				System.out.println("Suas Opções:");
+				System.out.println("1. Ataque");
+				System.out.println("2. Defesa");
+				System.out.println("3. Magica");
+				System.out.println("4. Item");
+				System.out.println("5. Escapar");
+				System.out.println("<=========================>");
+				
+				int dano_total = 0;
+				int num = entrada.nextInt();
+				switch(num) {
+				case 1:
+					dano_total = jogador.calcule_ataque();
+					turno = !turno;
+					break;
+				case 2:
+					jogador.defesa = true;
+					turno = !turno;
+					break;
+				case 3:
+					System.out.println("Escolha um feitiço:");
+					int i = 1;
+					for(Magia feitiço : jogador.feitiços) {
+						System.out.println(i + ". " + feitiço.getNome());
+					}
+					System.out.println("0 ou outro. Sair");
+					int sel = entrada.nextInt();
+					if(sel > 0 && sel <= jogador.feitiços.size()) {
+						Magia escolhido = jogador.feitiços.get(sel - 1);
+						int custo = escolhido.getCusto();
+						if(jogador.mana - custo >= 0) {
+							dano_total = escolhido.getPoder();
+							jogador.mana -= custo;
+							turno = !turno;
+							
+							System.out.println("Você lança o feitiço " + escolhido.getNome() + "!");
+						}else {
+							System.out.println("Você não tem mana suficiente!");
+						}
+					}
+	
+					break;
+				case 5:
+					System.out.println("Você tenta escapar...");
+					int sim = random.nextInt(3);
+					if(sim >= 1) {
+						System.out.println("Você consegue escapar!");
+						batalhando = false;
+						estado = ESTADO_ESCAPE;
 					}else {
-						System.out.println("Você não tem mana suficiente!");
+						System.out.println("Você não conseguiu escapar!");
+						turno = !turno;
+					}
+					break;
+				default:
+					System.out.println("Opção Inválida.");
+					break;
+				}
+				
+				if(!turno) {
+					if(inimigo.receba_dano(dano_total)) {
+						System.out.println("Inimigo " + inimigo.get_nome() + " foi derrotado!!");
+						
+						for(Jogador j : jogadores) {
+							if(j.vida > 0)
+								j.ganharXP(inimigo.getPoder() * 4 + (inimigo.getVida() / 2));
+						}
+						
+						batalhando = false;
+						estado = ESTADO_ESCAPE;
+						ainda_vivo = true;
+						break;
+					}else {
+						System.out.println("Inimigo " + inimigo.get_nome() + " ataca " + jogador.getNome() + "!");
+						
+						if(jogador.calcule_dano(inimigo.getPoder())) {
+							System.out.println(jogador.getNome() + "foi derrotado...");
+						}else {
+							turno = !turno;
+							ainda_vivo = true;
+						}
 					}
 				}
-
-				break;
-			case 5:
-				System.out.println("Você tenta escapar...");
-				int sim = random.nextInt(3);
-				if(sim >= 1) {
-					System.out.println("Você consegue escapar!");
-					batalhando = false;
-					estado = ESTADO_ESCAPE;
-				}else {
-					System.out.println("Você não conseguiu escapar!");
-					turno = !turno;
-				}
-				break;
-			default:
-				System.out.println("Opção Inválida.");
-				break;
 			}
 			
-			if(!turno) {
-				if(inimigo.receba_dano(dano_total)) {
-					System.out.println("Inimigo " + inimigo.get_nome() + " foi derrotado!!");
-					
-					jogador.ganharXP(inimigo.getPoder() * 4 + (inimigo.getVida() / 2));
-					
-					batalhando = false;
-					estado = ESTADO_ESCAPE;
-				}else {
-					System.out.println("Inimigo " + inimigo.get_nome() + " lhe ataca!");
-					
-					if(jogador.calcule_dano(inimigo.getPoder())) {
-						System.out.println("Você foi derrotado...");
-						batalhando = false;
-						estado = ESTADO_DERROTA;
-					}else {
-						turno = !turno;
-					}
-				}
+			if(!ainda_vivo) {
+				System.out.println("Todos os guerreiros foram derrotados...");
+				batalhando = false;
+				estado = ESTADO_DERROTA;
 			}
 		}
 		
 	}
 	
 	public static void main(String[] args) {
+		jogadores.add(new Jogador("Garcias", 30, 8, 5));
+		jogadores.add(new Jogador("Rafaela", 20, 10, 10));
+		jogadores.add(new Jogador("Markus", 50, 5, 5));
+		jogadores.add(new Jogador("Leslie", 22, 3, 20));
+		
 		// Declarando as cidades
 		
 		Cidade bree = new Cidade("Bree");
@@ -149,7 +172,7 @@ public class Runtime {
 		carlin.campos.add(dark_dungeon);
 		
 		carlin.quests.add(new Quest("Proteja Carlin", 
-				"City of Goblins tem interesse em expandir seu campos, dispostos a dizimar a"
+				"City of Goblins tem interesse em expandir seu campos, dispostos a dizimar a "
 				+ "população de Carlin.\nProcure guerreiros na cidade, monte um grupo de 4 deles e ajude a defender"
 				+ "os acessos à cidade.", null));
 		
@@ -218,8 +241,9 @@ public class Runtime {
 					estado = ESTADO_TAVERNA;
 					break;
 				case 2:
-					System.out.println("Bons sonhos!");
-					jogador.restauração();
+					System.out.println("Durma bem!");
+					for(Jogador jogador : jogadores)
+						jogador.restauração();
 					break;
 				case 4:
 					estado = ESTADO_LUGAR;
@@ -310,7 +334,7 @@ public class Runtime {
 					inum++;
 				}
 				
-				System.out.println(inum + ". Retornar à " + cidade_atual.getNome());
+				System.out.println(inum + ". Sair da Taverna");
 				
 				int a_sel = entrada.nextInt();
 				if (a_sel == inum) {
