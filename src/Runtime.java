@@ -8,7 +8,8 @@ public class Runtime {
 	final static int ESTADO_BATALHA = 1;
 	final static int ESTADO_ESTRADA = 2;
 	final static int ESTADO_ESCAPE = 3;
-	final static int ESTADO_DERROTA = 4;
+	final static int ESTADO_LUGAR = 4;
+	final static int ESTADO_DERROTA = 10;
 	
 	static Random random = new Random();
 	static Scanner entrada = new Scanner(System.in);
@@ -230,21 +231,23 @@ public class Runtime {
 						System.out.println("Você não encontra nada.\nGostaria de voltar?\n0 = Não, 1 = Sim");
 						int alt_sel = entrada.nextInt();
 						if(alt_sel >= 1) {
-							System.out.println("Você volta para Bree.");
+							System.out.println("Você volta para "+ cidade_atual.getNome() + ".");
 							estado = 0;
 						}
 						break;
 				}
 				break;
 			case ESTADO_ESCAPE:
-				System.out.println("Gostaria de voltar para Bree?\n0 = Não, 1 = Sim");
+				System.out.println("Gostaria de voltar para " + cidade_atual.getNome() + "?\n0 = Não, 1 = Sim");
 				int e_sel = entrada.nextInt();
 				if(e_sel >= 1) {
-					System.out.println("Você volta para Bree.");
+					System.out.println("Você volta para "+ cidade_atual.getNome() + ".");
 					estado = ESTADO_CIDADE;
 				}else {
 					estado = ESTADO_ESTRADA;
 				}
+				break;
+			case ESTADO_LUGAR:
 				break;
 			case ESTADO_DERROTA:
 				System.out.println("Fim de Jogo");
