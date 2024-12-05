@@ -9,6 +9,7 @@ public class Runtime {
 	final static int ESTADO_ESTRADA = 2;
 	final static int ESTADO_ESCAPE = 3;
 	final static int ESTADO_LUGAR = 4;
+	final static int ESTADO_TAVERNA = 5;
 	final static int ESTADO_DERROTA = 10;
 	
 	static Random random = new Random();
@@ -118,11 +119,6 @@ public class Runtime {
 		
 	}
 	
-	public static void taverna() {
-		System.out.println("Na taverna, você se depara com uma tabela de Quests...");
-		
-	}
-	
 	public static void main(String[] args) {
 		// Declarando as cidades
 		
@@ -134,6 +130,11 @@ public class Runtime {
 		bree.campos.add(demons_hill);
 		bree.campos.add(bloody_queen);
 		
+		bree.quests.add(new Quest("Contrato de Caça", 
+				"Há um caçador de recompensas bebendo na taverna que está cansado de perseguir um demônio.\n"
+				+ "O demônio havia roubado uma joia poderosa da princesa Liz, e o caçador oferece 50% da recompensa\n"
+				+ "pela cabeça dele e a joia de volta.", null));
+		
 		cidades.add(bree);
 		
 		Cidade carlin = new Cidade("Carlin");
@@ -144,17 +145,30 @@ public class Runtime {
 		carlin.campos.add(city_goblins);
 		carlin.campos.add(dark_dungeon);
 		
+		carlin.quests.add(new Quest("Proteja Carlin", 
+				"City of Goblins tem interesse em expandir seu campos, dispostos a dizimar a"
+				+ "população de Carlin.\nProcure guerreiros na cidade, monte um grupo de 4 deles e ajude a defender"
+				+ "os acessos à cidade.", null));
+		
 		cidades.add(carlin);
 		
 		Cidade trevor = new Cidade("Trevor");
 		
 		Campo thunder = new Campo("Thunder");
 		Campo poison = new Campo("Posion");
-		Campo graws_voice = new Campo("Graw's Voice");
+		Campo crows_voice = new Campo("Crow's Voice");
 		
 		trevor.campos.add(thunder);
 		trevor.campos.add(poison);
-		trevor.campos.add(graws_voice);
+		trevor.campos.add(crows_voice);
+		
+		trevor.quests.add(new Quest("Os magos de Trevor", 
+				"Os magos que se hospedavam na cidade desapareceram misteriosamente.\nOs cidadões querem descobrir o que causou o sumiço.", null));
+		
+		trevor.quests.add(new Quest("O Conto da Sereia", 
+				"Na caverna de Crow's Voice, um fenômeno tem acontecido onde num certo dia e horário da semana, guerreiros ouvem uma melodia atraente.\n"
+				+ "Dos que entram em busca da fonte da canção, alguns não voltam, e os que conseguem, voltam confusos e sem lembrança do que havia lá."
+				+ "Os cidadões querem que alguém preparado o bastante possa parar o fenômeno antes que mais vidas sejam tomadas.", null));
 		
 		cidades.add(trevor);
 		
@@ -204,6 +218,9 @@ public class Runtime {
 				
 				int sel = entrada.nextInt();
 				switch(sel) {
+				case 1:
+					estado = ESTADO_TAVERNA;
+					break;
 				case 2:
 					System.out.println("Bons sonhos!");
 					jogador.restauração();
@@ -287,14 +304,28 @@ public class Runtime {
 				}
 				
 				break;
+			case ESTADO_TAVERNA:
+				System.out.println("Na taverna, você se depara com uma tabela de Quests...");
+				System.out.println("Qual você gostaria de ver?");
+				int inum = 1;
+				for(Quest q : cidade_atual.quests) {
+					System.out.println(inum + ". " + q.get_nome());
+					inum++;
+				}
+				
+				System.out.println(inum + ". Retornar à " + cidade_atual.getNome());
+				
+				int a_sel = entrada.nextInt();
+				if (a_sel == inum) {
+					estado = ESTADO_CIDADE;
+				}
+				break;
 			case ESTADO_DERROTA:
 				System.out.println("Fim de Jogo");
 				jogando = false;
 				break;
 			}
 		}
-		
-		
 		
 		entrada.close();
 	}
