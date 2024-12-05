@@ -24,6 +24,43 @@ public class Runtime {
 	static int estado = ESTADO_CIDADE;
 	
 	static Quest quest_ativa = null;
+	static int quest_progresso = 0;
+	
+	public static void quest_bree() {
+		System.out.println("Ayayay");
+	}
+	
+	public static void quest_goblin() {
+		System.out.println("Ayayay");
+	}
+	
+	public static void quest_mago() {
+		System.out.println("Ayayay");
+	}
+	
+	public static void quest_sereia() {
+		switch(quest_progresso) {
+		case 0:
+			for(Campo c: cidade_atual.campos) {
+				if(c.get_nome() == "Crow's Voice") {
+					c.adicionar_inimigo(new Inimigo("Sereia", 80, 10));
+				}
+			}
+			quest_progresso = 1;
+			break;
+		case 1:
+			if(campo_atual.get_nome() == "Crow's Voice") {
+				campo_atual.limpar();
+				System.out.println("Com a Sereia derrotada, os guerreiros que ela estava prestes a matar despertam.");
+				System.out.println("Graças a você, a caverna está pacífica mais uma vez.");
+				
+				quest_ativa = null;
+				quest_progresso = 0;
+			}
+			break;
+			
+		}
+	}
 	
 	public static void batalha() {
 		Inimigo inimigo = campo_atual.encontro(random).clone();
@@ -37,98 +74,105 @@ public class Runtime {
 			boolean ainda_vivo = false;
 			
 			for(Jogador jogador : jogadores) {
-				if(jogador.vida <= 0) {
-					continue;
-				}
-				
-				System.out.println("<=========================>");
-				System.out.println(inimigo);
-				System.out.println("<=========================>");
-				System.out.println(jogador);
-				System.out.println("<=========================>");
-				System.out.println("Suas Opções:");
-				System.out.println("1. Ataque");
-				System.out.println("2. Defesa");
-				System.out.println("3. Magica");
-				System.out.println("4. Item");
-				System.out.println("5. Escapar");
-				System.out.println("<=========================>");
-				
-				int dano_total = 0;
-				int num = entrada.nextInt();
-				switch(num) {
-				case 1:
-					dano_total = jogador.calcule_ataque();
-					turno = !turno;
-					break;
-				case 2:
-					jogador.defesa = true;
-					turno = !turno;
-					break;
-				case 3:
-					System.out.println("Escolha um feitiço:");
-					int i = 1;
-					for(Magia feitiço : jogador.feitiços) {
-						System.out.println(i + ". " + feitiço.getNome());
+				while(turno) {
+					if(jogador.vida <= 0) {
+						continue;
 					}
-					System.out.println("0 ou outro. Sair");
-					int sel = entrada.nextInt();
-					if(sel > 0 && sel <= jogador.feitiços.size()) {
-						Magia escolhido = jogador.feitiços.get(sel - 1);
-						int custo = escolhido.getCusto();
-						if(jogador.mana - custo >= 0) {
-							dano_total = escolhido.getPoder();
-							jogador.mana -= custo;
-							turno = !turno;
-							
-							System.out.println("Você lança o feitiço " + escolhido.getNome() + "!");
-						}else {
-							System.out.println("Você não tem mana suficiente!");
-						}
-					}
-	
-					break;
-				case 5:
-					System.out.println("Você tenta escapar...");
-					int sim = random.nextInt(3);
-					if(sim >= 1) {
-						System.out.println("Você consegue escapar!");
-						batalhando = false;
-						estado = ESTADO_ESCAPE;
-					}else {
-						System.out.println("Você não conseguiu escapar!");
+					
+					System.out.println("<=========================>");
+					System.out.println(inimigo);
+					System.out.println("<=========================>");
+					System.out.println(jogador);
+					System.out.println("<=========================>");
+					System.out.println("Suas Opções:");
+					System.out.println("1. Ataque");
+					System.out.println("2. Defesa");
+					System.out.println("3. Magica");
+					System.out.println("4. Item");
+					System.out.println("5. Escapar");
+					System.out.println("<=========================>");
+					
+					int dano_total = 0;
+					int num = entrada.nextInt();
+					switch(num) {
+					case 1:
+						dano_total = jogador.calcule_ataque();
 						turno = !turno;
+						break;
+					case 2:
+						jogador.defesa = true;
+						turno = !turno;
+						break;
+					case 3:
+						System.out.println("Escolha um feitiço:");
+						int i = 1;
+						for(Magia feitiço : jogador.feitiços) {
+							System.out.println(i + ". " + feitiço.getNome());
+						}
+						System.out.println("0 ou outro. Sair");
+						int sel = entrada.nextInt();
+						if(sel > 0 && sel <= jogador.feitiços.size()) {
+							Magia escolhido = jogador.feitiços.get(sel - 1);
+							int custo = escolhido.getCusto();
+							if(jogador.mana - custo >= 0) {
+								dano_total = escolhido.getPoder();
+								jogador.mana -= custo;
+								turno = !turno;
+								
+								System.out.println("Você lança o feitiço " + escolhido.getNome() + "!");
+							}else {
+								System.out.println("Você não tem mana suficiente!");
+							}
+						}
+		
+						break;
+					case 5:
+						System.out.println("Você tenta escapar...");
+						int sim = random.nextInt(3);
+						if(sim >= 1) {
+							System.out.println("Você consegue escapar!");
+							batalhando = false;
+							estado = ESTADO_ESCAPE;
+						}else {
+							System.out.println("Você não conseguiu escapar!");
+							turno = !turno;
+						}
+						break;
+					default:
+						System.out.println("Opção Inválida.");
+						break;
 					}
-					break;
-				default:
-					System.out.println("Opção Inválida.");
-					break;
+					
+					if(!turno) {
+						if(inimigo.receba_dano(dano_total)) {
+							System.out.println("Inimigo " + inimigo.get_nome() + " foi derrotado!!");
+							
+							for(Jogador j : jogadores) {
+								if(j.vida > 0)
+									j.ganharXP(inimigo.getPoder() * 4 + (inimigo.getVida() / 2));
+							}
+							
+							batalhando = false;
+							estado = ESTADO_ESCAPE;
+							ainda_vivo = true;
+							break;
+						}else {
+							System.out.println("Inimigo " + inimigo.get_nome() + " ataca " + jogador.getNome() + "!");
+							
+							if(jogador.calcule_dano(inimigo.getPoder())) {
+								System.out.println(jogador.getNome() + "foi derrotado...");
+							}else {
+								
+								ainda_vivo = true;
+							}
+						}
+					}
 				}
 				
-				if(!turno) {
-					if(inimigo.receba_dano(dano_total)) {
-						System.out.println("Inimigo " + inimigo.get_nome() + " foi derrotado!!");
-						
-						for(Jogador j : jogadores) {
-							if(j.vida > 0)
-								j.ganharXP(inimigo.getPoder() * 4 + (inimigo.getVida() / 2));
-						}
-						
-						batalhando = false;
-						estado = ESTADO_ESCAPE;
-						ainda_vivo = true;
-						break;
-					}else {
-						System.out.println("Inimigo " + inimigo.get_nome() + " ataca " + jogador.getNome() + "!");
-						
-						if(jogador.calcule_dano(inimigo.getPoder())) {
-							System.out.println(jogador.getNome() + "foi derrotado...");
-						}else {
-							turno = !turno;
-							ainda_vivo = true;
-						}
-					}
-				}
+				if(!batalhando)
+					break;
+				
+				turno = true;
 			}
 			
 			if(!ainda_vivo) {
@@ -137,6 +181,8 @@ public class Runtime {
 				estado = ESTADO_DERROTA;
 			}
 		}
+		
+		
 		
 	}
 	
@@ -159,7 +205,7 @@ public class Runtime {
 		bree.quests.add(new Quest("Contrato de Caça", 
 				"Há um caçador de recompensas bebendo na taverna que está cansado de perseguir um demônio.\n"
 				+ "O demônio havia roubado uma joia poderosa da princesa Liz, e o caçador oferece 50% da recompensa\n"
-				+ "pela cabeça dele e a joia de volta.", null));
+				+ "pela cabeça dele e a joia de volta.", null, () -> quest_bree()));
 		
 		cidades.add(bree);
 		
@@ -174,7 +220,7 @@ public class Runtime {
 		carlin.quests.add(new Quest("Proteja Carlin", 
 				"City of Goblins tem interesse em expandir seu campos, dispostos a dizimar a "
 				+ "população de Carlin.\nProcure guerreiros na cidade, monte um grupo de 4 deles e ajude a defender"
-				+ "os acessos à cidade.", null));
+				+ "os acessos à cidade.", null, () -> quest_goblin()));
 		
 		cidades.add(carlin);
 		
@@ -189,12 +235,12 @@ public class Runtime {
 		trevor.campos.add(crows_voice);
 		
 		trevor.quests.add(new Quest("Os Magos de Trevor", 
-				"Os magos que se hospedavam na cidade desapareceram misteriosamente.\nOs cidadões querem descobrir o que causou o sumiço.", null));
+				"Os magos que se hospedavam na cidade desapareceram misteriosamente.\nOs cidadões querem descobrir o que causou o sumiço.", null, () -> quest_mago()));
 		
 		trevor.quests.add(new Quest("O Conto da Sereia", 
 				"Na caverna de Crow's Voice, um fenômeno tem acontecido onde num certo dia e horário da semana, guerreiros ouvem uma melodia atraente.\n"
 				+ "Dos que entram em busca da fonte da canção, alguns não voltam, e os que conseguem, voltam confusos e sem lembrança do que havia lá."
-				+ "Os cidadões querem que alguém preparado o bastante possa parar o fenômeno antes que mais vidas sejam tomadas.", null));
+				+ "Os cidadões querem que alguém preparado o bastante possa parar o fenômeno antes que mais vidas sejam tomadas.", null, () -> quest_sereia()));
 		
 		cidades.add(trevor);
 		
@@ -262,20 +308,27 @@ public class Runtime {
 				switch(possibilidade) {
 					case 0:
 					case 1:
-						System.out.println("Você se depara com um monstro!");
-						estado = 1;
+						if(!campo_atual.vazio()) {
+							System.out.println("Você se depara com um monstro!");
+							estado = ESTADO_BATALHA;
+						}else {
+							System.out.println("Parece que não há inimigos restantes..");
+							estado = ESTADO_CIDADE;
+						}
 						break;
 					default:
 						System.out.println("Você não encontra nada.\nGostaria de voltar?\n0 = Não, 1 = Sim");
 						int alt_sel = entrada.nextInt();
 						if(alt_sel >= 1) {
 							System.out.println("Você volta para "+ cidade_atual.getNome() + ".");
-							estado = 0;
+							estado = ESTADO_CIDADE;
 						}
 						break;
 				}
 				break;
 			case ESTADO_ESCAPE:
+				quest_ativa.rodar_quest();
+				
 				System.out.println("Gostaria de voltar para " + cidade_atual.getNome() + "?\n0 = Não, 1 = Sim");
 				int e_sel = entrada.nextInt();
 				if(e_sel >= 1) {
@@ -350,6 +403,9 @@ public class Runtime {
 								quest_ativa = a_quest;
 								System.out.println("Você aceitou a quest.");
 								cidade_atual.quests.remove(a_sel - 1);
+								
+								quest_progresso = 0;
+								quest_ativa.rodar_quest();
 							}else {
 								System.out.println("Você já tem uma quest ativa...");
 							}

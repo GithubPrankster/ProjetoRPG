@@ -20,4 +20,12 @@ public class Campo {
 	public Inimigo encontro(Random random) {
 		return inimigos.get(random.nextInt(inimigos.size()));
 	}
+	
+	public boolean vazio() {
+		return inimigos.isEmpty();
+	}
+	
+	public boolean limpar() {
+		return inimigos.removeAll(inimigos);
+	}
 }

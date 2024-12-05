@@ -3,11 +3,13 @@ public class Quest {
 	private String nome = "Quest";
 	private String descricao = "Descrição";
 	private Item recompensa = null;
+	private Runnable action = null;
 	
-	Quest(String n, String d, Item r){
+	Quest(String n, String d, Item r, Runnable u){
 		nome = n;
 		descricao = d;
 		recompensa = r;
+		action = u;
 	}
 	
 	public String get_nome() {
@@ -21,4 +23,9 @@ public class Quest {
 	public Item get_recompensa() {
 		return recompensa;
 	}
+	
+	public void rodar_quest() {
+		action.run();
+	}
+	
 }
