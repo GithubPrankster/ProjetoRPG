@@ -23,7 +23,7 @@ public class Runtime {
 	
 	static int estado = ESTADO_CIDADE;
 	
-	static int quest_ativa = 0;
+	static Quest quest_ativa = null;
 	
 	public static void batalha() {
 		Inimigo inimigo = campo_atual.encontro(random).clone();
@@ -315,6 +315,22 @@ public class Runtime {
 				int a_sel = entrada.nextInt();
 				if (a_sel == inum) {
 					estado = ESTADO_CIDADE;
+				}else {
+					if(a_sel >= 1 && a_sel <= cidade_atual.quests.size()) {
+						Quest a_quest = cidade_atual.quests.get(a_sel - 1);
+						System.out.println("Descrição:\n" + a_quest.get_descricao());
+						System.out.println("Irá aceitar? 0 = Não, 1 = Sim");
+						int b_sel = entrada.nextInt();
+						if(b_sel >= 1) {
+							if(quest_ativa == null) {
+								quest_ativa = a_quest;
+								System.out.println("Você aceitou a quest.");
+								cidade_atual.quests.remove(a_sel - 1);
+							}else {
+								System.out.println("Você já tem uma quest ativa...");
+							}
+						}
+					}
 				}
 				break;
 			case ESTADO_DERROTA:
