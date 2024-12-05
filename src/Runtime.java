@@ -13,18 +13,18 @@ public class Runtime {
 	static Random random = new Random();
 	static Scanner entrada = new Scanner(System.in);
 	
-	static ArrayList<Inimigo> inimigos = new ArrayList<>();
 	static Jogador jogador = new Jogador();
 	
 	static ArrayList<Cidade> cidades = new ArrayList<>();
 	static Cidade cidade_atual = null;
+	static Campo campo_atual = null;
 	
 	static int estado = ESTADO_CIDADE;
 	
 	static int quest_ativa = 0;
 	
 	public static void batalha() {
-		Inimigo inimigo = inimigos.get(random.nextInt(inimigos.size()));
+		Inimigo inimigo = campo_atual.encontro(random);
 		
 		System.out.println("Você encontrou: " + inimigo.get_nome() + "!");
 		
@@ -123,6 +123,45 @@ public class Runtime {
 	}
 	
 	public static void main(String[] args) {
+		// Declarando as cidades
+		
+		Cidade bree = new Cidade("Bree");
+		
+		Campo demons_hill = new Campo("Demon's Hill");
+		Campo bloody_queen = new Campo("Bloody Queen");
+		
+		bree.adicionar_campo(demons_hill);
+		bree.adicionar_campo(bloody_queen);
+		
+		cidades.add(bree);
+		
+		Cidade carlin = new Cidade("Carlin");
+		
+		Campo city_goblins = new Campo("City of Goblins");
+		Campo dark_dungeon = new Campo("Dark Dungeon");
+		
+		carlin.adicionar_campo(city_goblins);
+		carlin.adicionar_campo(dark_dungeon);
+		
+		cidades.add(carlin);
+		
+		Cidade trevor = new Cidade("Trevor");
+		
+		Campo thunder = new Campo("Thunder");
+		Campo poison = new Campo("Posion");
+		Campo graws_voice = new Campo("Graw's Voice");
+		
+		trevor.adicionar_campo(thunder);
+		trevor.adicionar_campo(poison);
+		trevor.adicionar_campo(graws_voice);
+		
+		cidades.add(trevor);
+		
+		cidade_atual = cidades.get(0);
+		campo_atual = cidade_atual.getCampo(0);
+		
+		// Carregando os inimigos
+		
 		String[] nomes = null;
 		try {
 			nomes = Files.readAllLines(Paths.get(monstros_texto))
@@ -132,20 +171,25 @@ public class Runtime {
 		}
 		
 		for(int i = 0; i < nomes.length; i++) {
-			inimigos.add(new Inimigo(nomes[i]));
+			Inimigo ini = new Inimigo(nomes[i]);
+			
+			int poder = ini.getPoder();
+			
+			if(poder <= 5) {
+				demons_hill.adicionar_inimigo(ini);
+			}else if(poder >= 4 && poder <= 8) {
+				bloody_queen.adicionar_inimigo(ini);
+			}
 		}
 		
-		System.out.println("Bem-vindo ao mundo!");
+		// Equipamento inicial para o jogador
 		
 		jogador.inventario.add(new Armadura(1, 1));
 		jogador.inventario.add(new Arma(1, 1));
 		jogador.equipar_armadura((Armadura)jogador.inventario.get(0));
 		jogador.equipar_arma((Arma)jogador.inventario.get(1));
 		
-		cidades.add(new Cidade("Bree"));
-		cidades.add(new Cidade("Carlin"));
-		cidades.add(new Cidade("Trevor"));
-		cidade_atual = cidades.get(0);
+		System.out.println("Bem-vindo ao mundo!");
 		
 		boolean jogando = true;
 		while(jogando) {
