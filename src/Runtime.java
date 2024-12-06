@@ -10,6 +10,7 @@ public class Runtime {
 	final static int ESTADO_ESCAPE = 3;
 	final static int ESTADO_LUGAR = 4;
 	final static int ESTADO_TAVERNA = 5;
+	final static int ESTADO_FERREIRO = 6;
 	final static int ESTADO_DERROTA = 10;
 	
 	static Random random = new Random();
@@ -314,9 +315,88 @@ public class Runtime {
 				estado = ESTADO_DERROTA;
 			}
 		}
+	}
+	
+	public static void estrada() {
+		System.out.println("Você começar a andar um pouco...");
+		int possibilidade = random.nextInt(4);
+		switch(possibilidade) {
+			case 0:
+			case 1:
+				if(!campo_atual.vazio()) {
+					System.out.println("Você se depara com um monstro!");
+					estado = ESTADO_BATALHA;
+				}else {
+					System.out.println("Parece que não há inimigos restantes..");
+					estado = ESTADO_CIDADE;
+				}
+				break;
+			case 2:
+				System.out.println("Você encontra algo...");
+				int coisa = random.nextInt(3);
+				switch(coisa) {
+				default:
+					int ourozinho = random.nextInt(20);
+					System.out.println("Você se depara com " + ourozinho + " peças de ouro! Oba!");
+					ouro += ourozinho;
+					break;
+				}
+				System.out.println("Gostaria de voltar?\n0 = Não, 1 = Sim");
+				int al_sel = entrada.nextInt();
+				if(al_sel >= 1) {
+					System.out.println("Você volta para "+ cidade_atual.getNome() + ".");
+					estado = ESTADO_CIDADE;
+				}
+				break;
+			default:
+				System.out.println("Você não encontra nada.\nGostaria de voltar?\n0 = Não, 1 = Sim");
+				int alt_sel = entrada.nextInt();
+				if(alt_sel >= 1) {
+					System.out.println("Você volta para "+ cidade_atual.getNome() + ".");
+					estado = ESTADO_CIDADE;
+				}
+				break;
+		}
+	}
+	
+	public static void lugar() {
+		System.out.println("Para onde gostaria de ir?");
+		ArrayList<Cidade> visitavel = new ArrayList<>();
 		
+		int num = 1;
+		for(Campo i : cidade_atual.campos) {
+			System.out.println(num + ". " + i.get_nome());
+			num++;
+		}
 		
+		int diff = num;
 		
+		for(Cidade c : cidades) {
+			if(c.getNome() != cidade_atual.getNome()) {
+				visitavel.add(c);
+				System.out.println(num + ". " + c.getNome());
+				num++;
+			}
+		}
+		
+		System.out.println(num + ". De Volta");
+		
+		int l_sel = entrada.nextInt();
+		if(l_sel == num) {
+			estado = ESTADO_CIDADE;
+		}else {
+			if(l_sel >= 1 && l_sel <= num) {
+				if(l_sel < diff) {
+					campo_atual = cidade_atual.campos.get(l_sel - 1);
+					estado = ESTADO_ESTRADA;
+				}else {
+					cidade_atual = visitavel.get(l_sel - diff);
+					estado = ESTADO_CIDADE;
+				}
+			}else {
+				System.out.println("Seleção invalída.");
+			}
+		}
 	}
 	
 	public static void main(String[] args) {
@@ -474,6 +554,9 @@ public class Runtime {
 						System.out.println("Você não tem ouro suficiente para dormir.");
 					}
 					break;
+				case 3:
+					estado = ESTADO_FERREIRO;
+					break;
 				case 4:
 					estado = ESTADO_LUGAR;
 					break;
@@ -486,45 +569,7 @@ public class Runtime {
 				batalha();
 				break;
 			case ESTADO_ESTRADA:
-				System.out.println("Você começar a andar um pouco...");
-				int possibilidade = random.nextInt(4);
-				switch(possibilidade) {
-					case 0:
-					case 1:
-						if(!campo_atual.vazio()) {
-							System.out.println("Você se depara com um monstro!");
-							estado = ESTADO_BATALHA;
-						}else {
-							System.out.println("Parece que não há inimigos restantes..");
-							estado = ESTADO_CIDADE;
-						}
-						break;
-					case 2:
-						System.out.println("Você encontra algo...");
-						int coisa = random.nextInt(3);
-						switch(coisa) {
-						default:
-							int ourozinho = random.nextInt(20);
-							System.out.println("Você se depara com " + ourozinho + " peças de ouro! Oba!");
-							ouro += ourozinho;
-							break;
-						}
-						System.out.println("Gostaria de voltar?\n0 = Não, 1 = Sim");
-						int al_sel = entrada.nextInt();
-						if(al_sel >= 1) {
-							System.out.println("Você volta para "+ cidade_atual.getNome() + ".");
-							estado = ESTADO_CIDADE;
-						}
-						break;
-					default:
-						System.out.println("Você não encontra nada.\nGostaria de voltar?\n0 = Não, 1 = Sim");
-						int alt_sel = entrada.nextInt();
-						if(alt_sel >= 1) {
-							System.out.println("Você volta para "+ cidade_atual.getNome() + ".");
-							estado = ESTADO_CIDADE;
-						}
-						break;
-				}
+				estrada();
 				break;
 			case ESTADO_ESCAPE:
 				if(quest_ativa != null)
@@ -540,44 +585,7 @@ public class Runtime {
 				}
 				break;
 			case ESTADO_LUGAR:
-				System.out.println("Para onde gostaria de ir?");
-				ArrayList<Cidade> visitavel = new ArrayList<>();
-				
-				int num = 1;
-				for(Campo i : cidade_atual.campos) {
-					System.out.println(num + ". " + i.get_nome());
-					num++;
-				}
-				
-				int diff = num;
-				
-				for(Cidade c : cidades) {
-					if(c.getNome() != cidade_atual.getNome()) {
-						visitavel.add(c);
-						System.out.println(num + ". " + c.getNome());
-						num++;
-					}
-				}
-				
-				System.out.println(num + ". De Volta");
-				
-				int l_sel = entrada.nextInt();
-				if(l_sel == num) {
-					estado = ESTADO_CIDADE;
-				}else {
-					if(l_sel >= 1 && l_sel <= num) {
-						if(l_sel < diff) {
-							campo_atual = cidade_atual.campos.get(l_sel - 1);
-							estado = ESTADO_ESTRADA;
-						}else {
-							cidade_atual = visitavel.get(l_sel - diff);
-							estado = ESTADO_CIDADE;
-						}
-					}else {
-						System.out.println("Seleção invalída.");
-					}
-				}
-				
+				lugar();
 				break;
 			case ESTADO_TAVERNA:
 				System.out.println("Na taverna, você se depara com uma tabela de Quests...");
@@ -612,6 +620,38 @@ public class Runtime {
 							}
 						}
 					}
+				}
+				break;
+			case ESTADO_FERREIRO:
+				System.out.println("Seja bem vindo! Aqui está o que eu tenho para vender.");
+				System.out.println("Seu ouro atual: " + ouro);
+				System.out.println("1. Poção de Vida : 10 Ouro");
+				System.out.println("2. Poção de Mana : 20 Ouro");
+				System.out.println("3 ou outro. Sair");
+				int ven_sel = entrada.nextInt();
+				switch(ven_sel) {
+				case 1:
+					if(ouro >= 10) {
+						ouro -= 10;
+						inventario.add(new Restauravel("Poção de Vida", 15, 0, false));
+						System.out.println("Obrigado!");
+					}else {
+						System.out.println("Você não tem ouro suficiente...");
+					}
+					break;
+				case 2:
+					if(ouro >= 20) {
+						ouro -= 20;
+						inventario.add(new Restauravel("Poção de Mana", 0, 10, false));
+						System.out.println("Obrigado!");
+					}else {
+						System.out.println("Você não tem ouro suficiente...");
+					}
+					break;
+				default:
+					System.out.println("Tenha um bom dia!");
+					estado = ESTADO_CIDADE;
+					break;
 				}
 				break;
 			case ESTADO_DERROTA:
