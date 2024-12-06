@@ -27,15 +27,107 @@ public class Runtime {
 	static int quest_progresso = 0;
 	
 	public static void quest_bree() {
-		System.out.println("Ayayay");
+		switch(quest_progresso) {
+		case 0:
+			Campo c = new Campo("Esconderijo do Demônio");
+			c.adicionar_inimigo(new Inimigo("Demônio Poderoso", 50, 10));
+			cidade_atual.campos.add(c);
+			System.out.println("Você recebe notícia de que o Demônio se esconde em Bree...");
+			
+			quest_progresso = 1;
+			break;
+		case 1:
+			if(campo_atual.get_nome() == "Esconderijo do Demônio" && estado == ESTADO_ESCAPE) {
+				campo_atual.limpar();
+				System.out.println("O demônio grita de forma agravante ao ser mandado de volta ao seu domínio.");
+				System.out.println("Apesar da joia ter tornado-o forte, não era o bastante contra vocês unidos.");
+				System.out.println("O caçador agradece a todos pelo bom trabalho e começa a jornada de volta à capital com a joia da princesa.");
+				
+				quest_ativa = null;
+				quest_progresso = 0;
+			}
+			break;
+		}
 	}
 	
 	public static void quest_goblin() {
-		System.out.println("Ayayay");
+		switch(quest_progresso) {
+		case 0:
+			for(Campo c: cidade_atual.campos) {
+				if(c.get_nome() == "City of Goblins") {
+					c.adicionar_inimigo(new Inimigo("Goblin", 20, 6));
+					c.adicionar_inimigo(new Inimigo("Goblin com Armadura", 40, 8));
+					c.adicionar_inimigo(new Inimigo("Goblin com Escudo", 32, 7));
+				}
+			}
+			System.out.println("Parta para City of Goblins para derrotar os invasores!");
+			quest_progresso = 1;
+			break;
+		case 1:
+		case 2:
+		case 3:
+		case 4:
+			if(campo_atual.get_nome() == "City of Goblins" && estado == ESTADO_ESCAPE) {
+				if(quest_progresso < 4) {
+					int diff = (4 - quest_progresso);
+					if(diff > 1)
+						System.out.println("Ainda restam " + diff + " goblins!");
+					else
+						System.out.println("Ainda resta " + diff + " goblin!");
+					quest_progresso++;
+				}else {
+					campo_atual.limpar();
+					System.out.println("Graças ao esforço dos guerreiros, os goblins cessam sua invasão.");
+					System.out.println("Há esperança que possam parar de querer expandir ao custo de vidas inocentes..");
+					
+					quest_ativa = null;
+					quest_progresso = 0;
+				}
+			}
+			break;
+			
+		}
 	}
 	
 	public static void quest_mago() {
-		System.out.println("Ayayay");
+		switch(quest_progresso) {
+		case 0:
+			System.out.println("Seria bom talvez tentar atrair a atenção de quem tiver feito os magos desaparecerem.");
+			System.out.println("Que tal dormir na Inn da cidade?");
+			quest_progresso = 1;
+			break;
+		case 1:
+			System.out.println("Enquanto dormiam, um de vocês escuta um barulho... e se depara com um esqueleto!");
+			System.out.println("O resto dos guerreiros acorda para derrotar a ameaça.");
+			batalha(new Inimigo("Esqueleto", 40, 5));
+			if(estado != ESTADO_DERROTA) {
+				System.out.println("O esqueleto, antes de voltar a ser uma pilha de ossos, exclama que o Lich irá ter a vingança dele.");
+				System.out.println("O Lich precisa da força de outros seres para exercer poder, portanto faz sentido o plano dele.");
+				System.out.println("Agora é hora de por um fim nele nas terras perigosas de Poison.");
+				
+				for(Campo c: cidade_atual.campos) {
+					if(c.get_nome() == "Poison") {
+						c.adicionar_inimigo(new Inimigo("Lich", 80, 10));
+					}
+				}
+				
+				for(Jogador jogador : jogadores)
+					jogador.restauração();
+				
+				quest_progresso = 2;
+			}
+			break;
+		case 2:
+			System.out.println("Lich:'Vocês n-não entendem! Pensem sobre o quanto de poder eu poderia compartilhar com v-vocês!'");
+			System.out.println("Lich:'Poderiam se tornar invencíveis s-se juntassem-se a mim-'");
+			System.out.println("Com uma cara de total desprezo, um dos guerreiros dá o golpe final no parasita sobrenatural.");
+			System.out.println("Sem sombra de dúvida, a ameaça desse monstro não existe mais...");
+			System.out.println("Os magos lentamente começam a acordar, e embora enfraquecidos, não tem nada a não ser respeito pelo que fizeram.");
+			
+			quest_ativa = null;
+			quest_progresso = 0;
+			break;
+		}
 	}
 	
 	public static void quest_sereia() {
@@ -46,10 +138,11 @@ public class Runtime {
 					c.adicionar_inimigo(new Inimigo("Sereia", 80, 10));
 				}
 			}
+			System.out.println("Agora é hora de ir para Crow's Voice para confrontar quem estiver lá..");
 			quest_progresso = 1;
 			break;
 		case 1:
-			if(campo_atual.get_nome() == "Crow's Voice") {
+			if(campo_atual.get_nome() == "Crow's Voice" && estado == ESTADO_ESCAPE) {
 				campo_atual.limpar();
 				System.out.println("Com a Sereia derrotada, os guerreiros que ela estava prestes a matar despertam.");
 				System.out.println("Graças a você, a caverna está pacífica mais uma vez.");
@@ -62,8 +155,8 @@ public class Runtime {
 		}
 	}
 	
-	public static void batalha() {
-		Inimigo inimigo = campo_atual.encontro(random).clone();
+	public static void batalha(Inimigo... ini) {
+		Inimigo inimigo = (ini.length > 0) ? ini[0].clone() : campo_atual.encontro(random).clone();
 		
 		System.out.println("Você encontrou: " + inimigo.get_nome() + "!");
 		
@@ -127,15 +220,19 @@ public class Runtime {
 		
 						break;
 					case 5:
-						System.out.println("Você tenta escapar...");
-						int sim = random.nextInt(3);
-						if(sim >= 1) {
-							System.out.println("Você consegue escapar!");
-							batalhando = false;
-							estado = ESTADO_ESCAPE;
+						if(ini.length > 0) {
+							System.out.println("Não há como escapar dessa cilada, bino!");
 						}else {
-							System.out.println("Você não conseguiu escapar!");
-							turno = !turno;
+							System.out.println("Você tenta escapar...");
+							int sim = random.nextInt(3);
+							if(sim >= 1) {
+								System.out.println("Você consegue escapar!");
+								batalhando = false;
+								estado = ESTADO_ESCAPE;
+							}else {
+								System.out.println("Você não conseguiu escapar!");
+								turno = !turno;
+							}
 						}
 						break;
 					default:
@@ -153,7 +250,8 @@ public class Runtime {
 							}
 							
 							batalhando = false;
-							estado = ESTADO_ESCAPE;
+							if(ini.length == 0)
+								estado = ESTADO_ESCAPE;
 							ainda_vivo = true;
 							break;
 						}else {
@@ -227,7 +325,7 @@ public class Runtime {
 		Cidade trevor = new Cidade("Trevor");
 		
 		Campo thunder = new Campo("Thunder");
-		Campo poison = new Campo("Posion");
+		Campo poison = new Campo("Poison");
 		Campo crows_voice = new Campo("Crow's Voice");
 		
 		trevor.campos.add(thunder);
@@ -290,6 +388,7 @@ public class Runtime {
 					System.out.println("Durma bem!");
 					for(Jogador jogador : jogadores)
 						jogador.restauração();
+					quest_ativa.rodar_quest();
 					break;
 				case 4:
 					estado = ESTADO_LUGAR;

@@ -93,7 +93,7 @@ public class Jogador {
             exp -= expParaProximoNivel;
             nivel++;
             expParaProximoNivel += 50; // xp necessario para o proximo nivel>3
-            System.out.println(nome + "sobe para o nível " + nivel + "!");
+            System.out.println(nome + " sobe para o nível " + nivel + "!");
             
             vida_max += (10 * nivel);
             mana_max += (5 * nivel);
