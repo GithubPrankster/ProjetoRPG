@@ -3,7 +3,6 @@ import java.util.*;
 public class Jogador {
 	private String nome = "João Ninguem";
 	
-	public ArrayList<Item> inventario = new ArrayList<>();
 	public ArrayList<Magia> feitiços = new ArrayList<>();
 	
 	private Armadura armadura_ativa = null;
@@ -24,10 +23,10 @@ public class Jogador {
 	
 	public Jogador() {
 		feitiços.add(new Magia("Bola de Fogo", 10, 3));
-		inventario.add(new Armadura(1, 1));
-		inventario.add(new Arma(1, 1));
-		equipar_armadura((Armadura)inventario.get(0));
-		equipar_arma((Arma)inventario.get(1));
+		//inventario.add(new Armadura(1, 1));
+		//inventario.add(new Arma(1, 1));
+		//equipar_armadura((Armadura)inventario.get(0));
+		//equipar_arma((Arma)inventario.get(1));
 	}
 	
 	public Jogador(String nom, int v, int a, int m) {

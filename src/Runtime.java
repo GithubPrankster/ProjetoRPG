@@ -16,6 +16,7 @@ public class Runtime {
 	static Scanner entrada = new Scanner(System.in);
 	
 	static ArrayList<Jogador> jogadores = new ArrayList<>();
+	static ArrayList<Item> inventario = new ArrayList<>();
 	
 	static ArrayList<Cidade> cidades = new ArrayList<>();
 	static Cidade cidade_atual = null;
@@ -291,10 +292,44 @@ public class Runtime {
 	}
 	
 	public static void main(String[] args) {
-		jogadores.add(new Jogador("Garcias", 30, 8, 5));
-		jogadores.add(new Jogador("Rafaela", 20, 10, 10));
-		jogadores.add(new Jogador("Markus", 50, 5, 5));
-		jogadores.add(new Jogador("Leslie", 22, 3, 20));
+		// Inicializando os guerreiros
+		
+		inventario.add(new Armadura(random.nextInt(2), random.nextInt(2)));
+		inventario.add(new Arma(random.nextInt(2), random.nextInt(2)));
+		
+		inventario.add(new Armadura(random.nextInt(2), random.nextInt(2)));
+		inventario.add(new Arma(random.nextInt(2), random.nextInt(2)));
+		
+		inventario.add(new Armadura(random.nextInt(2), random.nextInt(2)));
+		inventario.add(new Arma(random.nextInt(2), random.nextInt(2)));
+		
+		inventario.add(new Armadura(random.nextInt(2), random.nextInt(2)));
+		inventario.add(new Arma(random.nextInt(2), random.nextInt(2)));
+		
+		Jogador garcias = new Jogador("Garcias", 30, 8, 5);
+		garcias.equipar_armadura((Armadura)inventario.get(0));
+		garcias.equipar_arma((Arma)inventario.get(1));
+		
+		jogadores.add(garcias);
+		
+		Jogador rafaela = new Jogador("Rafaela", 20, 10, 10);
+		garcias.equipar_armadura((Armadura)inventario.get(2));
+		garcias.equipar_arma((Arma)inventario.get(3));
+		
+		jogadores.add(rafaela);
+		
+		Jogador markus = new Jogador("Markus", 50, 5, 5);
+		garcias.equipar_armadura((Armadura)inventario.get(4));
+		garcias.equipar_arma((Arma)inventario.get(5));
+		
+		jogadores.add(markus);
+		
+		Jogador leslie = new Jogador("Leslie", 22, 3, 20);
+		garcias.equipar_armadura((Armadura)inventario.get(6));
+		garcias.equipar_arma((Arma)inventario.get(7));
+		
+		jogadores.add(leslie);
+		
 		
 		// Declarando as cidades
 		
@@ -396,7 +431,8 @@ public class Runtime {
 						System.out.println("Durma bem!");
 						for(Jogador jogador : jogadores)
 							jogador.restauração();
-						quest_ativa.rodar_quest();
+						if(quest_ativa != null)
+							quest_ativa.rodar_quest();
 						ouro -= 5;
 					}else {
 						System.out.println("Você não tem ouro suficiente para dormir.");
@@ -415,7 +451,7 @@ public class Runtime {
 				break;
 			case ESTADO_ESTRADA:
 				System.out.println("Você começar a andar um pouco...");
-				int possibilidade = random.nextInt(3);
+				int possibilidade = random.nextInt(4);
 				switch(possibilidade) {
 					case 0:
 					case 1:
@@ -427,6 +463,16 @@ public class Runtime {
 							estado = ESTADO_CIDADE;
 						}
 						break;
+					case 2:
+						System.out.println("Você encontra algo...");
+						int coisa = random.nextInt(3);
+						switch(coisa) {
+						case 0:
+							int ourozinho = random.nextInt(20);
+							System.out.println("Você se depara com " + ourozinho + "peças de ouro! Oba!");
+							ouro += ourozinho;
+							break;
+						}
 					default:
 						System.out.println("Você não encontra nada.\nGostaria de voltar?\n0 = Não, 1 = Sim");
 						int alt_sel = entrada.nextInt();
@@ -438,7 +484,8 @@ public class Runtime {
 				}
 				break;
 			case ESTADO_ESCAPE:
-				quest_ativa.rodar_quest();
+				if(quest_ativa != null)
+					quest_ativa.rodar_quest();
 				
 				System.out.println("Gostaria de voltar para " + cidade_atual.getNome() + "?\n0 = Não, 1 = Sim");
 				int e_sel = entrada.nextInt();
