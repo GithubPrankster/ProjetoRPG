@@ -30,6 +30,12 @@ public class Runtime {
 	
 	static int ouro = 20;
 	
+	// Todas as Quests são implementadas como funções que
+	// fazem uso do estado global.
+	// Isso é necessário para saber onde está o grupo, para
+	// que o progresso na Quest somente aconteça na ordem
+	// desejada.
+	
 	public static void quest_bree() {
 		switch(quest_progresso) {
 		case 0:
@@ -101,35 +107,39 @@ public class Runtime {
 			quest_progresso = 1;
 			break;
 		case 1:
-			System.out.println("Enquanto dormiam, um de vocês escuta um barulho... e se depara com um esqueleto!");
-			System.out.println("O resto dos guerreiros acorda para derrotar a ameaça.");
-			batalha(new Inimigo("Esqueleto", 40, 5));
-			if(estado != ESTADO_DERROTA) {
-				System.out.println("O esqueleto, antes de voltar a ser uma pilha de ossos, exclama que o Lich irá ter a vingança dele.");
-				System.out.println("O Lich precisa da força de outros seres para exercer poder, portanto faz sentido o plano dele.");
-				System.out.println("Agora é hora de por um fim nele nas terras perigosas de Poison.");
-				
-				for(Campo c: cidade_atual.campos) {
-					if(c.get_nome() == "Poison") {
-						c.adicionar_inimigo(new Inimigo("Lich", 80, 10));
+			if(cidade_atual.getNome() == "Trevor" && estado == ESTADO_CIDADE) {
+				System.out.println("Enquanto dormiam, um de vocês escuta um barulho... e se depara com um esqueleto!");
+				System.out.println("O resto dos guerreiros acorda para derrotar a ameaça.");
+				batalha(new Inimigo("Esqueleto", 40, 5));
+				if(estado != ESTADO_DERROTA) {
+					System.out.println("O esqueleto, antes de voltar a ser uma pilha de ossos, exclama que o Lich irá ter a vingança dele.");
+					System.out.println("O Lich precisa da força de outros seres para exercer poder, portanto faz sentido o plano dele.");
+					System.out.println("Agora é hora de por um fim nele nas terras perigosas de Poison.");
+					
+					for(Campo c: cidade_atual.campos) {
+						if(c.get_nome() == "Poison") {
+							c.adicionar_inimigo(new Inimigo("Lich", 80, 10));
+						}
 					}
+					
+					for(Jogador jogador : jogadores)
+						jogador.restauracao();
+					
+					quest_progresso = 2;
 				}
-				
-				for(Jogador jogador : jogadores)
-					jogador.restauração();
-				
-				quest_progresso = 2;
 			}
 			break;
 		case 2:
-			System.out.println("Lich:'Vocês n-não entendem! Pensem sobre o quanto de poder eu poderia compartilhar com v-vocês!'");
-			System.out.println("Lich:'Poderiam se tornar invencíveis s-se juntassem-se a mim-'");
-			System.out.println("Com uma cara de total desprezo, um dos guerreiros dá o golpe final no parasita sobrenatural.");
-			System.out.println("Sem sombra de dúvida, a ameaça desse monstro não existe mais...");
-			System.out.println("Os magos lentamente começam a acordar, e embora enfraquecidos, não tem nada a não ser respeito pelo que fizeram.");
-			
-			quest_ativa = null;
-			quest_progresso = 0;
+			if(campo_atual.get_nome() == "Poison" && estado == ESTADO_ESCAPE) {
+				System.out.println("Lich:'Vocês n-não entendem! Pensem sobre o quanto de poder eu poderia compartilhar com v-vocês!'");
+				System.out.println("Lich:'Poderiam se tornar invencíveis s-se juntassem-se a mim-'");
+				System.out.println("Com uma cara de total desprezo, um dos guerreiros dá o golpe final no parasita sobrenatural.");
+				System.out.println("Sem sombra de dúvida, a ameaça desse monstro não existe mais...");
+				System.out.println("Os magos lentamente começam a acordar, e embora enfraquecidos, não tem nada a não ser respeito pelo que fizeram.");
+				
+				quest_ativa = null;
+				quest_progresso = 0;
+			}
 			break;
 		}
 	}
@@ -158,6 +168,12 @@ public class Runtime {
 			
 		}
 	}
+	
+	// A função batalha implementa o loop de jogo mais importante.
+	// O inimigo em questão é clonado da lista de inimigos presentes no campo
+	// para ter um encontro específico.
+	// A função também pode tomar como parâmetro um inimigo criado para um
+	// encontro especial. Isso também desabilita correr da batalha.
 	
 	public static void batalha(Inimigo... ini) {
 		Inimigo inimigo = (ini.length > 0) ? ini[0].clone() : campo_atual.encontro(random).clone();
@@ -203,13 +219,13 @@ public class Runtime {
 					case 3:
 						System.out.println("Escolha um feitiço:");
 						int i = 1;
-						for(Magia feitiço : jogador.feitiços) {
-							System.out.println(i + ". " + feitiço.getNome());
+						for(Magia feitico : jogador.feiticos) {
+							System.out.println(i + ". " + feitico.getNome());
 						}
 						System.out.println("0 ou outro. Sair");
 						int sel = entrada.nextInt();
-						if(sel > 0 && sel <= jogador.feitiços.size()) {
-							Magia escolhido = jogador.feitiços.get(sel - 1);
+						if(sel > 0 && sel <= jogador.feiticos.size()) {
+							Magia escolhido = jogador.feiticos.get(sel - 1);
 							int custo = escolhido.getCusto();
 							if(jogador.mana - custo >= 0) {
 								dano_total = escolhido.getPoder();
@@ -317,8 +333,11 @@ public class Runtime {
 		}
 	}
 	
+	// Essa função foi baseada nas sugestões obtidas de uma versão inicial
+	// onde foi pedido que haja mais variedade 
+	
 	public static void estrada() {
-		System.out.println("Você começar a andar um pouco...");
+		System.out.println("Você começa a andar um pouco...");
 		int possibilidade = random.nextInt(4);
 		switch(possibilidade) {
 			case 0:
@@ -546,7 +565,7 @@ public class Runtime {
 					if(ouro >= 5) {
 						System.out.println("Durma bem!");
 						for(Jogador jogador : jogadores)
-							jogador.restauração();
+							jogador.restauracao();
 						if(quest_ativa != null)
 							quest_ativa.rodar_quest();
 						ouro -= 5;

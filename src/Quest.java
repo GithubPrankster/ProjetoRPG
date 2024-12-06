@@ -3,6 +3,7 @@ public class Quest {
 	private String nome = "Quest";
 	private String descricao = "Descrição";
 	private Item recompensa = null;
+	// Necessário para implementar lógica específica para cada Quest.
 	private Runnable action = null;
 	
 	Quest(String n, String d, Item r, Runnable u){

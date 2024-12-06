@@ -1,3 +1,4 @@
+// Baseado em trabalho feito por Guilherme
 import java.util.Random;
 
 public abstract class Item {

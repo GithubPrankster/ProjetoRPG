@@ -3,7 +3,7 @@ import java.util.*;
 public class Jogador {
 	private String nome = "João Ninguem";
 	
-	public ArrayList<Magia> feitiços = new ArrayList<>();
+	public ArrayList<Magia> feiticos = new ArrayList<>();
 	
 	private Armadura armadura_ativa = null;
 	private Arma arma_ativa = null;
@@ -22,7 +22,7 @@ public class Jogador {
 	public boolean defesa = false;
 	
 	public Jogador() {
-		feitiços.add(new Magia("Bola de Fogo", 10, 3));
+		feiticos.add(new Magia("Bola de Fogo", 10, 3));
 	}
 	
 	public Jogador(String nom, int v, int a, int m) {
@@ -36,7 +36,7 @@ public class Jogador {
 		mana_max = m;
 	}
 	
-	public void restauração() {
+	public void restauracao() {
 		vida = vida_max;
 		mana = mana_max;
 	}
@@ -62,6 +62,9 @@ public class Jogador {
 	public void equipar_arma(Arma arma) {
 		arma_ativa = arma;
 	}
+	
+	//Embora a situação não apareça em prática, o código sempre tem em mente
+	//a possibilidade do Jogador não ter armadura e/ou arma. 
 	
 	public boolean calcule_dano(int dano) {
 		int num_defesa = armadura_ativa != null ? armadura_ativa.getDefesa() : 0;
