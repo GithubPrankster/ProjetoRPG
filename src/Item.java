@@ -27,4 +27,8 @@ public abstract class Item {
                 break;
         }
     }
+
+	public String getNome() {
+		return nome;
+	}
 }

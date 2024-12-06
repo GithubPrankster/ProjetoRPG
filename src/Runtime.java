@@ -222,6 +222,34 @@ public class Runtime {
 						}
 		
 						break;
+					case 4:
+						System.out.println("Escolha um item:");
+						
+						ArrayList<Restauravel> usaveis = new ArrayList<>();
+						
+						int e = 1;
+						for(Item res : inventario) {
+							if(res instanceof Restauravel) {
+								usaveis.add((Restauravel) res);
+								System.out.println(e + ". " + res.getNome());
+								e++;
+							}
+						}
+						System.out.println("0 ou outro. Sair");
+						int selec = entrada.nextInt();
+						if(selec > 0 && selec <= usaveis.size()) {
+							Restauravel escolhido = usaveis.get(selec - 1);
+							if(escolhido.todos()) {
+								for(Jogador j : jogadores)
+									j.restaura_parcial(escolhido.restaura_vida(), escolhido.restaura_mp());
+							}else {
+								jogador.restaura_parcial(escolhido.restaura_vida(), escolhido.restaura_mp());
+							}
+							inventario.remove(escolhido);
+							turno = !turno;
+						}
+		
+						break;
 					case 5:
 						if(ini.length > 0) {
 							System.out.println("Não há como escapar dessa cilada, bino!");
@@ -329,6 +357,14 @@ public class Runtime {
 		garcias.equipar_arma((Arma)inventario.get(7));
 		
 		jogadores.add(leslie);
+		
+		for(int i = 0; i < 5; ++i) {
+			inventario.add(new Restauravel("Poção de Vida", 15, 0, false));
+		}
+		
+		for(int i = 0; i < 2; ++i) {
+			inventario.add(new Restauravel("Poção de Mana", 0, 10, false));
+		}
 		
 		
 		// Declarando as cidades
@@ -467,12 +503,19 @@ public class Runtime {
 						System.out.println("Você encontra algo...");
 						int coisa = random.nextInt(3);
 						switch(coisa) {
-						case 0:
+						default:
 							int ourozinho = random.nextInt(20);
-							System.out.println("Você se depara com " + ourozinho + "peças de ouro! Oba!");
+							System.out.println("Você se depara com " + ourozinho + " peças de ouro! Oba!");
 							ouro += ourozinho;
 							break;
 						}
+						System.out.println("Gostaria de voltar?\n0 = Não, 1 = Sim");
+						int al_sel = entrada.nextInt();
+						if(al_sel >= 1) {
+							System.out.println("Você volta para "+ cidade_atual.getNome() + ".");
+							estado = ESTADO_CIDADE;
+						}
+						break;
 					default:
 						System.out.println("Você não encontra nada.\nGostaria de voltar?\n0 = Não, 1 = Sim");
 						int alt_sel = entrada.nextInt();

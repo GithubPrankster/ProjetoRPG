@@ -23,10 +23,6 @@ public class Jogador {
 	
 	public Jogador() {
 		feitiços.add(new Magia("Bola de Fogo", 10, 3));
-		//inventario.add(new Armadura(1, 1));
-		//inventario.add(new Arma(1, 1));
-		//equipar_armadura((Armadura)inventario.get(0));
-		//equipar_arma((Arma)inventario.get(1));
 	}
 	
 	public Jogador(String nom, int v, int a, int m) {
@@ -44,7 +40,21 @@ public class Jogador {
 		vida = vida_max;
 		mana = mana_max;
 	}
-
+	
+	public void restaura_parcial(int v, int m) {
+		if(v > 0)
+			System.out.println(nome + " tem sua vida restaurada por " + v + "!");
+		if(m > 0)
+			System.out.println(nome + " tem sua mana restaurada por " + m + "!");
+		
+		vida += v;
+		mana += m;
+		if(vida > vida_max)
+			vida = vida_max;
+		if(mana > mana_max)
+			mana = mana_max;
+	}
+	
 	public void equipar_armadura(Armadura armadura) {
 		armadura_ativa = armadura;
 	}
@@ -80,12 +90,14 @@ public class Jogador {
 		return nome;
 	}
 	
+	//Contribuições de Guilherme
+	
 	public void ganharXP(int xpRecebido) {
         exp += xpRecebido;
         System.out.println(nome + " ganha " + xpRecebido + " XP!");
         verificarNivelUp();
     }
-
+	
     // Método para verificação para subir de nivel
     private void verificarNivelUp() {
         while (exp >= expParaProximoNivel) {
@@ -102,4 +114,6 @@ public class Jogador {
             mana = mana_max;
         }
     }
+    
+    //
 }
