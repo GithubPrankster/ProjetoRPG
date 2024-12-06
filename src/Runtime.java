@@ -26,6 +26,8 @@ public class Runtime {
 	static Quest quest_ativa = null;
 	static int quest_progresso = 0;
 	
+	static int ouro = 20;
+	
 	public static void quest_bree() {
 		switch(quest_progresso) {
 		case 0:
@@ -246,8 +248,12 @@ public class Runtime {
 							
 							for(Jogador j : jogadores) {
 								if(j.vida > 0)
-									j.ganharXP(inimigo.getPoder() * 4 + (inimigo.getVida() / 2));
+									j.ganharXP(inimigo.getPoder() * 5 + (inimigo.getVida() / 2));
 							}
+							
+							int res_ouro = inimigo.getPoder() * 4; 
+							ouro += res_ouro;
+							System.out.println("Você ganha " + res_ouro + " peças de ouro!");
 							
 							batalhando = false;
 							if(ini.length == 0)
@@ -373,6 +379,7 @@ public class Runtime {
 		while(jogando) {
 			switch(estado) {
 			case ESTADO_CIDADE:
+				System.out.println("Seu ouro atual: " + ouro);
 				System.out.println("Você está na cidade de " + cidade_atual.getNome() + ". O que deseja fazer?");
 				System.out.println("1. Visitar a taverna");
 				System.out.println("2. Descansar numa Inn");
@@ -385,10 +392,15 @@ public class Runtime {
 					estado = ESTADO_TAVERNA;
 					break;
 				case 2:
-					System.out.println("Durma bem!");
-					for(Jogador jogador : jogadores)
-						jogador.restauração();
-					quest_ativa.rodar_quest();
+					if(ouro >= 5) {
+						System.out.println("Durma bem!");
+						for(Jogador jogador : jogadores)
+							jogador.restauração();
+						quest_ativa.rodar_quest();
+						ouro -= 5;
+					}else {
+						System.out.println("Você não tem ouro suficiente para dormir.");
+					}
 					break;
 				case 4:
 					estado = ESTADO_LUGAR;
